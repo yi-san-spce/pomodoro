@@ -27,8 +27,6 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: 番茄钟
-  installerIcon: assets/icon.png
-  uninstallerIcon: assets/icon.png
 
 portable:
   artifactName: ${productName}-Portable-${version}.${ext}
