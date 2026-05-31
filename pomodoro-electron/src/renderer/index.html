@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data:;">
+<title>🍅 番茄钟</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/timer.css">
+<link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+<div class="app work-mode" id="app">
+
+  <!-- 右上角按钮 -->
+  <div class="top-btns">
+    <button class="top-btn" id="btnPin" title="窗口置顶">📌</button>
+    <button class="top-btn" id="btnSettings" title="设置">⚙️</button>
+  </div>
+
+  <!-- 模式切换 -->
+  <div class="tabs">
+    <button class="tab active" data-mode="work">🍅 专注</button>
+    <button class="tab" data-mode="break">☕ 短休</button>
+    <button class="tab" data-mode="long">🌿 长休</button>
+  </div>
+
+  <!-- 计时器圆环 -->
+  <div class="ring-container">
+    <svg class="ring-svg" viewBox="0 0 260 260">
+      <circle class="ring-bg" cx="130" cy="130" r="120"/>
+      <circle class="ring-fg" id="ring" cx="130" cy="130" r="120"
+              stroke-dasharray="753.98" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-text">
+      <div class="time-display" id="timeDisplay">25:00</div>
+      <div class="state-label" id="stateLabel">专注中</div>
+    </div>
+  </div>
+
+  <!-- 名言卡片 -->
+  <div class="quote-card" id="quoteCard">
+    <div class="quote-content">
+      <div class="quote-text" id="quoteText">"自律给我自由"</div>
+      <div class="quote-author" id="quoteAuthor">— Keep</div>
+    </div>
+    <div class="quote-actions">
+      <button class="quote-btn" id="btnRefreshQuote" title="换一句">🔄</button>
+      <button class="quote-btn" id="btnEditQuotes" title="管理名言">✏</button>
+    </div>
+  </div>
+
+  <!-- 控制按钮 -->
+  <div class="controls">
+    <button class="btn btn-reset" id="btnReset" title="重置（R）">↺</button>
+    <button class="btn btn-play" id="btnPlay" title="开始 / 暂停（空格）">▶</button>
+    <button class="btn btn-skip" id="btnSkip" title="跳过（→）">⏭</button>
+  </div>
+
+  <!-- 已完成番茄数 -->
+  <div class="tomatoes" id="tomatoes"></div>
+</div>
+
+<!-- ========== 设置面板 ========== -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <h3>⚙️ 设置</h3>
+
+    <!-- 设置标签 -->
+    <div class="settings-tabs">
+      <button class="settings-tab active" id="settingsTabTimer">⏱ 计时</button>
+      <button class="settings-tab" id="settingsTabTheme">🎨 外观</button>
+      <button class="settings-tab" id="settingsTabQuotes">💬 名言</button>
+    </div>
+
+    <!-- ====== 计时设置 ====== -->
+    <div class="settings-section active" id="settingsTimer">
+      <div class="setting-row">
+        <label>🍅 专注时长（分钟）</label>
+        <input type="number" id="setWork" min="1" max="120" value="25">
+      </div>
+      <div class="setting-row">
+        <label>☕ 短休时长（分钟）</label>
+        <input type="number" id="setBreak" min="1" max="60" value="5">
+      </div>
+      <div class="setting-row">
+        <label>🌿 长休时长（分钟）</label>
+        <input type="number" id="setLong" min="1" max="120" value="15">
+      </div>
+      <div class="setting-row">
+        <label>🔢 长休间隔（番茄数）</label>
+        <input type="number" id="setInterval" min="1" max="10" value="4">
+      </div>
+      <div class="setting-row">
+        <label>🔊 音量</label>
+        <input type="range" id="setVolume" min="0" max="100" value="70" style="width:100px">
+      </div>
+      <div class="setting-row">
+        <label>🔄 自动开始下一轮</label>
+        <input type="checkbox" id="setAutoStart" checked style="width:18px;height:18px;accent-color:var(--work)">
+      </div>
+      <div class="setting-row">
+        <label>📥 关闭时最小化到托盘</label>
+        <input type="checkbox" id="setMinimizeToTray" checked style="width:18px;height:18px;accent-color:var(--work)">
+      </div>
+    </div>
+
+    <!-- ====== 外观设置 ====== -->
+    <div class="settings-section" id="settingsTheme">
+
+      <!-- 预设主题 -->
+      <label style="font-size:13px;color:var(--sub)">预设主题</label>
+      <div class="preset-row">
+        <span class="preset-dot selected" data-preset="dark" title="暗黑" style="background:#1a1b2e"></span>
+        <span class="preset-dot" data-preset="forest" title="森林" style="background:#1a2e1f"></span>
+        <span class="preset-dot" data-preset="ocean" title="海洋" style="background:#1a2430"></span>
+        <span class="preset-dot" data-preset="sunset" title="日落" style="background:#2e221a"></span>
+      </div>
+
+      <div class="setting-row">
+        <label>🍅 专注颜色</label>
+        <input type="color" id="themeAccentWork" value="#ff6b6b">
+      </div>
+      <div class="setting-row">
+        <label>☕ 短休颜色</label>
+        <input type="color" id="themeAccentBreak" value="#4ecdc4">
+      </div>
+      <div class="setting-row">
+        <label>🌿 长休颜色</label>
+        <input type="color" id="themeAccentLongBreak" value="#45b7d1">
+      </div>
+      <div style="border-top:1px solid var(--ring-bg);margin:4px 0"></div>
+
+      <div class="setting-row">
+        <label>背景类型</label>
+        <select id="themeBgType">
+          <option value="solid">纯色</option>
+          <option value="gradient">渐变</option>
+          <option value="image">图片</option>
+        </select>
+      </div>
+      <div class="setting-row" id="bgSolidRow">
+        <label>背景颜色</label>
+        <input type="color" id="themeBgSolid" value="#1a1b2e">
+      </div>
+      <div id="bgGradientRow" style="display:none">
+        <div class="setting-row">
+          <label>渐变方向</label>
+          <select id="themeBgGradientDir">
+            <option value="135deg">↘ 135°</option>
+            <option value="90deg">→ 90°</option>
+            <option value="45deg">↗ 45°</option>
+            <option value="180deg">↓ 180°</option>
+            <option value="0deg">↑ 0°</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>渐变颜色1</label>
+          <input type="color" id="themeBgGradientColor1" value="#1a1b2e">
+        </div>
+        <div class="setting-row">
+          <label>渐变颜色2</label>
+          <input type="color" id="themeBgGradientColor2" value="#2d1b4e">
+        </div>
+      </div>
+      <div class="setting-row" id="bgImageUrlRow" style="display:none">
+        <label>图片 URL</label>
+        <input type="text" id="themeBgImageUrl" placeholder="https://..." style="width:180px">
+      </div>
+
+      <div class="setting-row">
+        <label>卡片颜色</label>
+        <input type="color" id="themeCardBg" value="#252742">
+      </div>
+      <div class="setting-row">
+        <label>卡片透明度</label>
+        <input type="range" id="themeCardOpacity" min="0.3" max="1" step="0.05" value="1" style="width:100px">
+      </div>
+      <div class="setting-row">
+        <label>主文字颜色</label>
+        <input type="color" id="themeTextPrimary" value="#e8e9f0">
+      </div>
+      <div class="setting-row">
+        <label>副文字颜色</label>
+        <input type="color" id="themeTextSecondary" value="#8b8daa">
+      </div>
+      <div class="setting-row">
+        <label>进度环底色</label>
+        <input type="color" id="themeRingBg" value="#2a2c4a">
+      </div>
+      <div class="setting-row">
+        <label>按钮底色</label>
+        <input type="color" id="themeBtnBg" value="#2f3155">
+      </div>
+      <div class="setting-row">
+        <label>按钮悬停色</label>
+        <input type="color" id="themeBtnHover" value="#3c3f6b">
+      </div>
+      <div class="setting-row">
+        <label>发光透明度</label>
+        <input type="range" id="themeGlowOpacity" min="0" max="1" step="0.05" value="0.3" style="width:100px">
+      </div>
+
+      <button class="btn-close" id="btnSaveTheme">💾 保存主题</button>
+      <button class="btn-close btn-danger" id="btnResetTheme">🔄 恢复默认主题</button>
+    </div>
+
+    <!-- ====== 名言设置 ====== -->
+    <div class="settings-section" id="settingsQuotes">
+      <div class="setting-row">
+        <label>轮换策略</label>
+        <select id="quoteStrategy">
+          <option value="per-session">每次完成切换</option>
+          <option value="manual">仅手动</option>
+          <option value="random">随机</option>
+        </select>
+      </div>
+
+      <div style="border-top:1px solid var(--ring-bg);margin:4px 0"></div>
+
+      <label style="font-size:13px;color:var(--sub);font-weight:500">添加自定义名言</label>
+      <div class="add-quote-form">
+        <input type="text" id="newQuoteText" placeholder="名言内容（必填，最多200字）" maxlength="200">
+        <div class="add-quote-row">
+          <input type="text" id="newQuoteAuthor" placeholder="作者（可选）" maxlength="50" style="flex:1">
+          <select id="newQuoteLang">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+          </select>
+          <button class="btn-add" id="btnAddQuote">添加</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--ring-bg);margin:4px 0"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <label style="font-size:13px;color:var(--sub);font-weight:500">我的名言</label>
+        <span id="quoteCountInfo" style="font-size:11px;color:var(--sub)"></span>
+      </div>
+      <div class="quote-list" id="quoteList"></div>
+    </div>
+
+    <button class="btn-close" id="btnCloseSettings">完成</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Scripts -->
+<script src="js/storage.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/themes.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

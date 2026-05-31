@@ -1,0 +1,34 @@
+appId: com.pomodoro.timer
+productName: Pomodoro Timer
+copyright: Copyright (c) 2026
+
+directories:
+  output: dist
+  buildResources: assets
+
+files:
+  - src/**/*
+  - data/**/*
+  - node_modules/**/*
+  - package.json
+
+win:
+  icon: assets/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 番茄钟
+  installerIcon: assets/icon.png
+  uninstallerIcon: assets/icon.png
+
+portable:
+  artifactName: ${productName}-Portable-${version}.${ext}

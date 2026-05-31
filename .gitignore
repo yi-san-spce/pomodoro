@@ -12,3 +12,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Claude Code
+.claude/
+
+# Electron build output
+pomodoro-electron/dist/
+pomodoro-electron/node_modules/

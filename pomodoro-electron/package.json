@@ -1,0 +1,22 @@
+{
+  "name": "pomodoro-timer",
+  "version": "2.0.0",
+  "description": "🍅 番茄钟桌面应用 — 专注计时 · 主题定制 · 名言语录",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win"
+  },
+  "dependencies": {
+    "electron-store": "^10.0.0"
+  },
+  "devDependencies": {
+    "electron": "^33.4.0",
+    "electron-builder": "^25.1.8"
+  },
+  "author": "",
+  "license": "MIT"
+}

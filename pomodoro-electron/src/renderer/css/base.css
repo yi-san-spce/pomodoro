@@ -1,0 +1,47 @@
+/* ====== CSS Reset & Variables ====== */
+:root {
+  --bg: #1a1b2e;
+  --card: #252742;
+  --text: #e8e9f0;
+  --sub: #8b8daa;
+  --work: #ff6b6b;
+  --work-glow: rgba(255,107,107,0.3);
+  --break: #4ecdc4;
+  --break-glow: rgba(78,205,196,0.3);
+  --long-break: #45b7d1;
+  --long-glow: rgba(69,183,209,0.3);
+  --ring-bg: #2a2c4a;
+  --btn-bg: #2f3155;
+  --btn-hover: #3c3f6b;
+  --card-opacity: 1;
+  --radius: 16px;
+  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'PingFang SC', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+  transition: background 0.5s;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,107,107,0.04), transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(78,205,196,0.04), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
